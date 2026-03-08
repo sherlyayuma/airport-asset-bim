@@ -4,8 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordInput = document.getElementById('password');
     const errorAlert = document.getElementById('error-alert');
     const errorMessage = document.getElementById('error-message');
-    const submitBtn = loginForm.querySelector('.submit-btn');
-    const btnText = submitBtn.querySelector('span');
+    
+    // Periksa apakah ini halaman login
+    if (loginForm) {
+        const submitBtn = loginForm.querySelector('.submit-btn');
+        const btnText = submitBtn ? submitBtn.querySelector('span') : null;
 
     // Toggle Password Visibility
     togglePasswordBtn.addEventListener('click', () => {
@@ -71,10 +74,11 @@ document.addEventListener('DOMContentLoaded', () => {
             errorMessage.textContent = 'Gagal menghubungi server. Pastikan Backend sudah jalan.';
             errorAlert.classList.remove('hidden');
         } finally {
-            submitBtn.disabled = false;
-            btnText.textContent = originalBtnText;
+            if (submitBtn) submitBtn.disabled = false;
+            if (btnText) btnText.textContent = originalBtnText;
         }
     });
+}
 
     /* Background Slideshow */
     const slides = document.querySelectorAll('.slide');
