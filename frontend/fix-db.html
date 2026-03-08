@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Fix Database Schema</title>
+</head>
+
+<body>
+    <h1>Fixing Database Schema...</h1>
+    <div id="result">Waiting...</div>
+    <script>
+        fetch('/debug/fix-schema')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+                if (data.success) {
+                    alert('Database Fixed! You can now upload unlimited images.');
+                } else {
+                    alert('Failed: ' + JSON.stringify(data));
+                }
+            })
+            .catch(err => {
+                document.getElementById('result').innerText = 'Error: ' + err.message;
+            });
+    </script>
+</body>
+
+</html>

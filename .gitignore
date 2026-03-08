@@ -1,0 +1,24 @@
+# Dependencies
+**/node_modules
+**/dist
+**/build
+
+# Environment Variables
+**/.env
+
+# IDE / OS Files
+**/.DS_Store
+**/Thumbs.db
+**/.vscode
+**/.idea
+
+# Uploads & Barcodes (We don't want to upload local test data)
+**/uploads/*
+!**/uploads/.gitkeep
+**/barcodes/*
+!**/barcodes/.gitkeep
+
+# Logs
+**/logs
+**/*.log
+**/debug_log.txt

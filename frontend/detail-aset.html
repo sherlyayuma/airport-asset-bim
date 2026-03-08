@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Aset - Sistem Aset Bandara</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-mobile.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+</head>
+
+<body class="detail-page-body">
+    <!-- ... (rest of body) ... -->
+
+
+    <!-- Top Navigation -->
+    <header class="detail-nav">
+        <!-- Logo Section -->
+        <!-- Logo Section -->
+        <div class="header-logos" style="margin-right: 15px;">
+            <div class="logo-circle">
+                <img src="assets/logo-minangkabau.jpg" alt="Logo MIA">
+            </div>
+        </div>
+        <div class="nav-brand">
+            <span>Sistem Aset Bandara</span>
+        </div>
+        <div class="nav-right">
+            <!-- Admin elements removed -->
+        </div>
+    </header>
+
+    <main class="detail-container">
+        <!-- Back Button Area -->
+        <div class="back-link-container">
+            <a href="data-aset.html" class="back-link"
+                style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: #666; font-weight: 500; font-size: 14px;">
+                <i class="ph ph-arrow-left" style="font-size: 18px;"></i>
+                Kembali ke Data Aset
+            </a>
+        </div>
+
+        <div class="detail-card">
+            <!-- Content Section -->
+            <div class="detail-content">
+                <div class="detail-header"
+                    style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div class="title-section">
+                        <div id="d-header-description"
+                            style="font-size: 1.75rem; color: #111827; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.05em; line-height: 1.2;">
+                            -</div>
+                        <h1 class="asset-title" id="d-nama" style="font-size: 1.75rem;">Loading...</h1>
+                    </div>
+                    <!-- Hidden field for Asset ID -->
+                    <div id="d-asset-id-full" style="display: none;"></div>
+
+                    <div class="header-right-meta">
+                        <!-- Condition Badge Moved to Right -->
+                        <div class="status-pill" id="d-kondisi-badge"
+                            style="position: static; padding: 8px 16px; border-radius: 20px; box-shadow: none; display: flex; align-items: center; gap: 6px;">
+                            <i class="ph-fill" id="d-kondisi-icon" style="font-size: 20px;"></i>
+                            <span style="font-weight: 600;" id="d-kondisi-text">Kondisi: -</span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="divider-light">
+
+                <!-- MAIN INFO GRID (User Requested Order) -->
+                <div class="info-grid" style="grid-template-columns: repeat(3, 1fr); gap: 24px;">
+
+                    <!-- 1. Asset (Name) -->
+                    <!-- Note: Name is already in Header, but user asked for "Asset" column. Repeation or use Header? 
+                         I'll put it here to be safe and strictly follow order. -->
+                    <div class="info-item">
+                        <label>Asset</label>
+                        <div class="info-value" id="d-nama-field">-</div>
+                        <!-- Different ID to avoid conflict or reuse d-nama? d-nama is H1. I'll create d-nama-field in JS if needed, or just let JS update both classes? JS targets id. I will add id d-nama-2 -->
+                    </div>
+
+                    <!-- 2. Cap. date -->
+                    <div class="info-item">
+                        <label>Cap. date</label>
+                        <div class="info-value" id="d-tanggal-beli">-</div>
+                    </div>
+
+                    <!-- 3. Asset description -->
+                    <div class="info-item">
+                        <label>Asset description</label>
+                        <div class="info-value" id="d-description">-</div>
+                    </div>
+
+                    <!-- 4. Acquis. val. -->
+                    <div class="info-item">
+                        <label>Acquis. val.</label>
+                        <div class="info-value" id="d-acquis-val">-</div>
+                    </div>
+
+                    <!-- Accum. dep. REMOVED -->
+                    <!-- Book val. REMOVED -->
+
+                    <!-- 7. Monthly Depreciation -->
+                    <div class="info-item">
+                        <label>Monthly Depreciation</label>
+                        <div class="info-value" id="d-monthly-dep">-</div>
+                    </div>
+
+                    <!-- 8. Crcy -->
+                    <div class="info-item">
+                        <label>Crcy</label>
+                        <div class="info-value" id="d-currency">-</div>
+                    </div>
+
+                    <!-- 9. Cost Ctr -->
+                    <div class="info-item">
+                        <label>Cost Ctr</label>
+                        <div class="info-value" id="d-cost-center">-</div>
+                    </div>
+
+                    <!-- 10. Quantity -->
+                    <div class="info-item">
+                        <label>Quantity</label>
+                        <div class="info-value" id="d-quantity">-</div>
+                    </div>
+
+                    <!-- 11. BUn -->
+                    <div class="info-item">
+                        <label>BUn</label>
+                        <div class="info-value" id="d-bun">-</div>
+                    </div>
+
+                    <!-- 12. Use -->
+                    <div class="info-item">
+                        <label>Use</label>
+                        <div class="info-value" id="d-use-life">-</div>
+                    </div>
+
+                    <!-- 13. DepKy -->
+                    <div class="info-item">
+                        <label>DepKy</label>
+                        <div class="info-value" id="d-dep-key">-</div>
+                    </div>
+
+                    <!-- 14. Ev. grp 5 -->
+                    <div class="info-item">
+                        <label>Ev. grp 5</label>
+                        <div class="info-value" id="d-ev-grp-5">-</div>
+                    </div>
+
+                    <!-- 15. Odep. Start -->
+                    <div class="info-item">
+                        <label>Odep. Start</label>
+                        <div class="info-value" id="d-odep-start">-</div>
+                    </div>
+
+                    <!-- 16-19 Ev.1-4 -->
+                    <div class="info-item"><label>Ev.1</label>
+                        <div class="info-value" id="d-ev-1">-</div>
+                    </div>
+                    <div class="info-item"><label>Ev.2</label>
+                        <div class="info-value" id="d-ev-2">-</div>
+                    </div>
+                    <div class="info-item"><label>Ev.3</label>
+                        <div class="info-value" id="d-ev-3">-</div>
+                    </div>
+                    <div class="info-item"><label>Ev.4</label>
+                        <div class="info-value" id="d-ev-4">-</div>
+                    </div>
+
+                    <!-- 20. Type Barang -->
+                    <div class="info-item">
+                        <label>Type Barang</label>
+                        <div class="info-value" id="d-type-barang">-</div>
+                    </div>
+
+                    <!-- 21. Vendor Name -->
+                    <div class="info-item">
+                        <label>Vendor Name</label>
+                        <div class="info-value" id="d-vendor-name">-</div>
+                    </div>
+
+                    <!-- 22. Location -->
+                    <div class="info-item">
+                        <label>Location</label>
+                        <div class="info-value" id="d-lokasi-full">-</div>
+                    </div>
+
+                    <!-- 23. Sub Asset -->
+                    <div class="info-item">
+                        <label>Sub Asset</label>
+                        <div class="info-value" id="d-sub-asset">-</div>
+                    </div>
+
+                    <!-- 24. Pemakai -->
+                    <div class="info-item">
+                        <label>Pemakai</label>
+                        <div class="info-value" id="d-pemakai">-</div>
+                    </div>
+
+                    <!-- 25. Merk -->
+                    <div class="info-item">
+                        <label>Merk</label>
+                        <div class="info-value" id="d-merk">-</div>
+                    </div>
+                </div>
+
+                <hr class="divider-light">
+
+                <!-- Extra Info (Photos, QR, Remarks) -->
+                <div>
+                    <h3 class="section-label">KETERANGAN TAMBAHAN</h3>
+                    <p id="d-keterangan" style="font-size: 14px; color: var(--text-color); line-height: 1.6;">-</p>
+
+                    <h3 class="section-label" style="margin-top: 24px;">FOTO ASET</h3>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;" id="d-images">
+                        <!-- JS populated -->
+                    </div>
+
+                    <h3 class="section-label" style="margin-top: 24px;">QR CODE</h3>
+                    <div id="d-barcode"></div>
+                </div>
+
+                <hr class="divider-light">
+
+                <!-- Admin Actions -->
+                <div class="admin-actions">
+                    <div class="action-buttons">
+
+                        <button onclick="toggleEditMode()" id="btn-edit-toggle"
+                            class="btn-action-custom btn-edit-custom">
+                            <i class="ph-fill ph-pencil-simple"></i>
+                            <span>Edit Aset</span>
+                        </button>
+                        <!-- Download QR Button Removed (Moved to view-qr.html) -->
+                        <button onclick="deleteCurrentAsset()" class="btn-action-custom btn-delete-custom">
+                            <i class="ph-fill ph-trash"></i>
+                            <span>Hapus Aset</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Form Container -->
+        <div id="edit-card" class="detail-card" style="display: none;">
+            <div class="detail-content">
+                <h3 class="section-label" style="color: var(--primary-color);">EDIT ASET</h3>
+                <form id="edit-form">
+                    <div class="form-grid" style="grid-template-columns: repeat(2, 1fr);">
+
+                        <!-- 1. Asset (Name) -->
+                        <div class="form-section">
+                            <label class="form-label">Asset</label>
+                            <input type="text" id="edit-nama" class="form-input" required>
+                        </div>
+
+                        <!-- 2. Cap. date -->
+                        <div class="form-section">
+                            <label class="form-label">Cap. date</label>
+                            <input type="date" id="edit-tanggal" class="form-input">
+                        </div>
+
+                        <!-- 3. Asset description -->
+                        <div class="form-section" style="grid-column: span 2;">
+                            <label class="form-label">Asset description</label>
+                            <input type="text" id="edit-description" class="form-input">
+                        </div>
+
+                        <!-- 4. Acquis. val. -->
+                        <div class="form-section">
+                            <label class="form-label">Acquis. val.</label>
+                            <input type="text" id="edit-acquis-val" class="form-input">
+                        </div>
+
+                        <!-- Accum. dep. REMOVED -->
+                        <!-- Book val. REMOVED -->
+
+                        <!-- 7. Monthly Depreciation -->
+                        <div class="form-section">
+                            <label class="form-label">Monthly Depreciation</label>
+                            <input type="text" id="edit-monthly-dep" class="form-input">
+                        </div>
+
+                        <!-- 8. Crcy -->
+                        <div class="form-section">
+                            <label class="form-label">Crcy</label>
+                            <input type="text" id="edit-currency" class="form-input">
+                        </div>
+
+                        <!-- 9. Cost Ctr -->
+                        <div class="form-section">
+                            <label class="form-label">Cost Ctr</label>
+                            <input type="text" id="edit-cost-center" class="form-input">
+                        </div>
+
+                        <!-- 10. Quantity -->
+                        <div class="form-section">
+                            <label class="form-label">Quantity</label>
+                            <input type="text" id="edit-quantity" class="form-input" oninput="formatDecimal(this)">
+                        </div>
+
+                        <!-- 11. BUn -->
+                        <div class="form-section">
+                            <label class="form-label">BUn</label>
+                            <input type="text" id="edit-bun" class="form-input">
+                        </div>
+
+                        <!-- 12. Use -->
+                        <div class="form-section">
+                            <label class="form-label">Use</label>
+                            <input type="text" id="edit-use-life" class="form-input">
+                        </div>
+
+                        <!-- 13. DepKy -->
+                        <div class="form-section">
+                            <label class="form-label">DepKy</label>
+                            <input type="text" id="edit-dep-key" class="form-input">
+                        </div>
+
+                        <!-- 14. Ev. grp 5 -->
+                        <div class="form-section">
+                            <label class="form-label">Ev. grp 5</label>
+                            <input type="text" id="edit-ev-grp-5" class="form-input">
+                        </div>
+
+                        <!-- 15. Odep. Start -->
+                        <div class="form-section">
+                            <label class="form-label">Odep. Start</label>
+                            <input type="date" id="edit-odep-start" class="form-input">
+                        </div>
+
+                        <!-- 16-19 Ev.1-4 -->
+                        <div class="form-section"><label class="form-label">Ev.1</label><input type="text"
+                                id="edit-ev-1" class="form-input"></div>
+                        <div class="form-section"><label class="form-label">Ev.2</label><input type="text"
+                                id="edit-ev-2" class="form-input"></div>
+                        <div class="form-section"><label class="form-label">Ev.3</label><input type="text"
+                                id="edit-ev-3" class="form-input"></div>
+                        <div class="form-section"><label class="form-label">Ev.4</label><input type="text"
+                                id="edit-ev-4" class="form-input"></div>
+
+                        <!-- 20. Type Barang -->
+                        <div class="form-section">
+                            <label class="form-label">Type Barang</label>
+                            <input type="text" id="edit-type-barang" class="form-input">
+                        </div>
+
+                        <!-- 21. Vendor Name -->
+                        <div class="form-section">
+                            <label class="form-label">Vendor Name</label>
+                            <input type="text" id="edit-vendor-name" class="form-input">
+                        </div>
+
+                        <!-- 22. Location -->
+                        <div class="form-section">
+                            <label class="form-label">Location</label>
+                            <select id="edit-lokasi" class="form-select">
+                                <option value="">Pilih Lokasi</option>
+                            </select>
+                        </div>
+
+                        <!-- 23. Sub Asset -->
+                        <div class="form-section">
+                            <label class="form-label">Sub Asset</label>
+                            <input type="text" id="edit-sub-asset" class="form-input">
+                        </div>
+
+                        <!-- 24. Pemakai -->
+                        <div class="form-section">
+                            <label class="form-label">Pemakai</label>
+                            <input type="text" id="edit-pemakai" class="form-input">
+                        </div>
+
+                        <!-- 25. Merk -->
+                        <div class="form-section">
+                            <label class="form-label">Merk</label>
+                            <input type="text" id="edit-merk" class="form-input">
+                        </div>
+
+                        <!-- ID (Hidden but included for context needed for Update API) -->
+                        <input type="text" id="edit-asset-id" class="form-input" disabled style="display:none">
+
+                    </div>
+
+                    <!-- Additional Hidden/Bottom options like Condition/Type Asset needed for update? -->
+                    <div class="form-grid" style="grid-template-columns: repeat(2, 1fr); margin-top: 16px;">
+                        <div class="form-section">
+                            <label class="form-label">Tipe Aset (Class)</label>
+                            <select id="edit-tipe" class="form-select">
+                                <option value="Asset Tetap">Asset Tetap</option>
+                                <option value="Aset Dibiayakan">Aset Dibiayakan</option>
+                                <option value="AUC">AUC</option>
+                                <option value="Intangible Asset">Intangible Asset</option>
+                            </select>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label">Kondisi</label>
+                            <select id="edit-kondisi" class="form-select">
+                                <option value="Baik">Baik</option>
+                                <option value="Rusak">Rusak</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Images -->
+                    <div class="form-section" style="margin-top: 24px;">
+                        <label class="form-label">Foto Aset Saat Ini</label>
+                        <div id="existing-images-container"
+                            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; margin-bottom: 16px;">
+                        </div>
+
+                        <label class="form-label">Upload Foto Baru</label>
+                        <div class="file-upload-area" id="edit-drop-zone">
+                            <i class="ph ph-upload-simple upload-icon"></i>
+                            <p class="upload-text">Klik atau drag untuk tambah foto (Multiple)</p>
+                            <input type="file" id="edit-foto" name="image" accept="image/*" multiple
+                                style="display: none;">
+                        </div>
+                        <div id="edit-preview-container"
+                            style="margin-top: 16px; display: none; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px;">
+                        </div>
+                    </div>
+
+                    <div class="form-section" style="margin-top: 16px;">
+                        <label class="form-label">Keterangan Tambahan</label>
+                        <textarea id="edit-keterangan" class="form-input" style="height: 80px;"></textarea>
+                    </div>
+
+                    <div class="admin-actions" style="margin-top: 24px;">
+                        <div class="action-buttons" style="justify-content: flex-end;">
+                            <button type="button" onclick="toggleEditMode()" class="btn-modal cancel">Batal</button>
+                            <button type="submit" class="btn-modal confirm"
+                                style="background: var(--primary-color);">Simpan Perubahan</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Confirmation -->
+    <div id="delete-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon">
+                <i class="ph-fill ph-trash"></i>
+            </div>
+            <h3 class="modal-title">Hapus Aset?</h3>
+            <p class="modal-desc" id="modal-desc-text">Apakah Anda yakin ingin menghapus aset ini? Tindakan ini tidak
+                dapat dibatalkan.</p>
+            <div class="modal-actions">
+                <button class="btn-modal cancel" onclick="closeModal()">Batal</button>
+                <button class="btn-modal confirm" id="confirm-delete-btn">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script>
+        let currentAssetData = null;
+        let deletedImages = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            if (!id) {
+                alert('ID Aset tidak ditemukan');
+                window.location.href = 'data-aset.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/assets/view/${id}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const asset = result.asset;
+                    currentAssetData = asset; // Store for edit
+
+                    // Populate Data
+                    document.title = `Detail ${asset.asset_id} - ${asset.nama}`;
+                    // document.getElementById('d-asset-id').textContent = 'ID: ' + asset.asset_id; // REMOVED: Element does not exist
+                    document.getElementById('d-nama').textContent = asset.nama; // Use asset.nama ('Asset')
+                    document.getElementById('d-nama-field').textContent = asset.nama;
+                    document.getElementById('d-header-description').textContent = asset.description || '-';
+                    document.getElementById('d-description').textContent = asset.description || '-';
+
+
+                    document.getElementById('d-asset-id-full').textContent = asset.asset_id;
+
+                    document.getElementById('d-sub-asset').textContent = asset.sub_asset || '-';
+                    // document.getElementById('d-tipe').textContent = asset.tipe_aset || '-'; // REMOVED: Element does not exist in new layout
+                    document.getElementById('d-type-barang').textContent = asset.type_barang || '-';
+                    document.getElementById('d-merk').textContent = asset.merk || '-';
+
+                    document.getElementById('d-quantity').textContent = asset.quantity ? new Intl.NumberFormat('en-US').format(asset.quantity) : '-';
+
+                    // Perolehan
+                    document.getElementById('d-tanggal-beli').textContent = asset.tanggal_beli ? new Date(asset.tanggal_beli).toLocaleDateString('id-ID') : '-';
+
+                    document.getElementById('d-vendor-name').textContent = asset.vendor_name || '-';
+                    document.getElementById('d-acquis-val').textContent = asset.acquis_val ? new Intl.NumberFormat('en-US').format(asset.acquis_val) : '-';
+                    document.getElementById('d-currency').textContent = asset.currency || 'IDR';
+                    document.getElementById('d-bun').textContent = asset.bun || '-';
+
+                    // Penyusutan
+                    // Accum. dep. and Book val. removed
+                    document.getElementById('d-monthly-dep').textContent = asset.monthly_dep ? new Intl.NumberFormat('en-US').format(asset.monthly_dep) : '-';
+                    document.getElementById('d-dep-key').textContent = asset.dep_key || '-';
+                    document.getElementById('d-odep-start').textContent = asset.odep_start ? new Date(asset.odep_start).toLocaleDateString('id-ID') : '-';
+                    document.getElementById('d-use-life').textContent = asset.use_life || '-';
+
+
+                    // Lokasi & Lainnya
+                    document.getElementById('d-lokasi-full').textContent = asset.lokasi || '-';
+                    document.getElementById('d-pemakai').textContent = asset.pemakai || '-';
+                    document.getElementById('d-cost-center').textContent = asset.cost_center || '-';
+
+                    // Evaluasi
+                    document.getElementById('d-ev-1').textContent = asset.ev_1 || '-';
+                    document.getElementById('d-ev-2').textContent = asset.ev_2 || '-';
+                    document.getElementById('d-ev-3').textContent = asset.ev_3 || '-';
+                    document.getElementById('d-ev-4').textContent = asset.ev_4 || '-';
+                    document.getElementById('d-ev-grp-5').textContent = asset.ev_grp_5 || '-';
+
+                    document.getElementById('d-keterangan').textContent = asset.keterangan || '-';
+
+                    // Condition Badge
+                    const badgeStart = document.getElementById('d-kondisi-badge');
+                    const icon = document.getElementById('d-kondisi-icon');
+                    const text = document.getElementById('d-kondisi-text');
+
+                    text.textContent = 'Kondisi: ' + asset.kondisi;
+                    badgeStart.className = 'status-pill';
+                    icon.className = 'ph-fill';
+
+                    const lowerKondisi = (asset.kondisi || '').toLowerCase();
+
+                    if (lowerKondisi === 'baik') {
+                        badgeStart.style.background = '#e6ffec';
+                        badgeStart.style.color = '#2ea043';
+                        badgeStart.style.border = '1px solid #bcebc3';
+                        icon.classList.add('ph-check-circle');
+                    } else if (lowerKondisi === 'perbaikan') {
+                        badgeStart.style.background = '#fff8c5';
+                        badgeStart.style.color = '#bf8700';
+                        badgeStart.style.border = '1px solid #fae17d';
+                        icon.classList.add('ph-wrench');
+                    } else {
+                        // Rusak, Hilang, or others
+                        badgeStart.style.background = '#ffebe9';
+                        badgeStart.style.color = '#cf222e';
+                        badgeStart.style.border = '1px solid #ffc1c0';
+                        icon.classList.add('ph-x-circle');
+                    }
+
+                    // Images
+                    if (asset.image_path) {
+                        const imgContainer = document.getElementById('d-images');
+                        imgContainer.innerHTML = '';
+                        imgContainer.style.display = 'grid';
+                        imgContainer.style.gridTemplateColumns = 'repeat(auto-fill, minmax(100px, 1fr))';
+                        imgContainer.style.gap = '12px';
+
+                        let images = [];
+                        try {
+                            // Try parsing JSON array
+                            images = JSON.parse(asset.image_path);
+                            // Ensure it is an array
+                            if (!Array.isArray(images)) images = [asset.image_path];
+                        } catch (e) {
+                            // Fallback if plain string
+                            images = [asset.image_path];
+                        }
+
+                        images.forEach(src => {
+                            const div = document.createElement('div');
+                            div.style.width = '100%';
+                            div.style.aspectRatio = '1/1';
+                            div.style.borderRadius = '8px';
+                            div.style.overflow = 'hidden';
+                            div.style.border = '1px solid #eee';
+                            // Clean up path if needed (remove quotes if double encoded)
+                            const cleanSrc = src.replace(/^"|"$/g, '');
+                            div.innerHTML = `<img src="${cleanSrc}" style="width:100%; height:100%; object-fit: cover; cursor: pointer;" onclick="window.open(this.src)">`;
+                            imgContainer.appendChild(div);
+                        });
+                    }
+
+                    const qrDiv = document.getElementById('d-barcode');
+                    qrDiv.innerHTML = `
+                        <a href="view-qr.html?id=${id}" class="btn-primary" style="text-decoration: none; display: inline-flex; justify-content: center;">
+                            <i class="ph-fill ph-qr-code"></i>
+                            <span>Lihat QR Code</span>
+                        </a>
+                    `;
+
+                } else {
+                    document.getElementById('d-nama').textContent = 'Gagal Memuat';
+                    document.getElementById('d-description').innerHTML = `<span style="color: red;">Error: ${result.message}</span>`;
+                }
+            } catch (error) {
+                console.error(error);
+                document.getElementById('d-nama').textContent = 'Terjadi Kesalahan';
+                document.getElementById('d-description').innerHTML = `<span style="color: red;">${error.message}</span>`;
+            }
+        });
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icon = type === 'success' ? 'ph-check-circle' : 'ph-warning-circle';
+            toast.innerHTML = `<i class="ph-fill ${icon} toast-icon"></i><span class="toast-message">${message}</span>`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        window.closeModal = () => {
+            const modal = document.getElementById('delete-modal');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        };
+
+        function deleteCurrentAsset() {
+            const assetId = document.getElementById('d-asset-id-full').textContent;
+            document.getElementById('modal-desc-text').textContent = `Apakah Anda yakin ingin menghapus aset ${assetId}? Tindakan ini tidak dapat dibatalkan.`;
+            const modal = document.getElementById('delete-modal');
+            modal.style.display = 'flex';
+            requestAnimationFrame(() => modal.classList.add('show'));
+        }
+
+        document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            const btn = document.getElementById('confirm-delete-btn');
+
+            btn.textContent = 'Menghapus...';
+            btn.disabled = true;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/assets/delete/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.status === 401) {
+                    alert('Sesi habis. Silakan login kembali.');
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                const result = await response.json();
+
+                closeModal();
+
+                if (result.success) {
+                    showToast('Aset berhasil dihapus!', 'success');
+                    setTimeout(() => window.location.href = 'data-aset.html', 1500);
+                } else {
+                    showToast('Gagal menghapus: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                closeModal();
+                showToast('Terjadi kesalahan saat menghapus.', 'error');
+            } finally {
+                btn.textContent = 'Hapus';
+                btn.disabled = false;
+            }
+        });
+
+        // Edit Logic
+        // currentAssetData is already declared globally above.
+
+        // Helper for decimal input
+        function formatDecimal(input) {
+            let value = input.value.replace(/[^0-9,]/g, '');
+            const parts = value.split(',');
+            if (parts.length > 2) {
+                value = parts[0] + ',' + parts.slice(1).join('');
+            }
+            input.value = value;
+        }
+
+        function toggleEditMode() {
+            const viewCard = document.querySelector('.detail-card:not(#edit-card)');
+            const editCard = document.getElementById('edit-card');
+            const btn = document.getElementById('btn-edit-toggle');
+
+            if (editCard.style.display === 'none') {
+                // Swith to Edit
+                viewCard.style.display = 'none';
+                editCard.style.display = 'block';
+                btn.style.display = 'none'; // Hide edit button while editing
+
+                fetchLocationsForEdit(); // Load locations
+
+                // Populate inputs
+                if (currentAssetData) {
+                    const c = currentAssetData;
+                    const formatNum = (val) => val ? new Intl.NumberFormat('en-US').format(val) : '';
+
+                    document.getElementById('edit-asset-id').value = c.asset_id;
+
+                    document.getElementById('edit-sub-asset').value = c.sub_asset || '';
+                    document.getElementById('edit-nama').value = c.nama;
+                    document.getElementById('edit-description').value = c.description || '';
+                    document.getElementById('edit-type-barang').value = c.type_barang || '';
+                    document.getElementById('edit-merk').value = c.merk || '';
+
+                    document.getElementById('edit-quantity').value = (c.quantity !== undefined && c.quantity !== null) ? c.quantity.toString().replace('.', ',') : '';
+
+                    document.getElementById('edit-tipe').value = c.tipe_aset || 'Asset Tetap';
+                    document.getElementById('edit-kondisi').value = c.kondisi;
+
+                    const safeDate = (d) => d ? new Date(d).toISOString().split('T')[0] : '';
+                    document.getElementById('edit-tanggal').value = safeDate(c.tanggal_beli);
+
+
+                    document.getElementById('edit-vendor-name').value = c.vendor_name || '';
+                    document.getElementById('edit-acquis-val').value = formatNum(c.acquis_val);
+                    document.getElementById('edit-currency').value = c.currency || 'IDR';
+                    document.getElementById('edit-bun').value = c.bun || '';
+
+                    // Accum. dep. and Book val. removed
+                    document.getElementById('edit-monthly-dep').value = formatNum(c.monthly_dep);
+                    document.getElementById('edit-dep-key').value = c.dep_key || '';
+                    document.getElementById('edit-odep-start').value = safeDate(c.odep_start);
+                    document.getElementById('edit-use-life').value = c.use_life || '';
+
+
+                    document.getElementById('edit-lokasi').value = c.location_id || ''; // Set ID
+                    document.getElementById('edit-pemakai').value = c.pemakai || '';
+                    document.getElementById('edit-cost-center').value = c.cost_center || '';
+
+                    document.getElementById('edit-ev-1').value = c.ev_1 || '';
+                    document.getElementById('edit-ev-2').value = c.ev_2 || '';
+                    document.getElementById('edit-ev-3').value = c.ev_3 || '';
+                    document.getElementById('edit-ev-4').value = c.ev_4 || '';
+                    document.getElementById('edit-ev-grp-5').value = c.ev_grp_5 || '';
+
+                    document.getElementById('edit-keterangan').value = c.keterangan || '';
+
+                    // Populate Existing Images
+                    const existingContainer = document.getElementById('existing-images-container');
+                    existingContainer.innerHTML = '';
+                    deletedImages = []; // Reset
+
+                    let images = [];
+                    try {
+                        images = JSON.parse(c.image_path || '[]');
+                        if (!Array.isArray(images)) images = [c.image_path];
+                    } catch (e) {
+                        if (c.image_path) images = [c.image_path];
+                    }
+
+                    if (images.length > 0 && images[0]) {
+                        images.forEach((src, index) => {
+                            const div = document.createElement('div');
+                            div.style.position = 'relative';
+
+                            const cleanSrc = src.replace(/^"|"$/g, '');
+
+                            const img = document.createElement('img');
+                            img.src = cleanSrc;
+                            img.style.width = '100%';
+                            img.style.height = '100px';
+                            img.style.objectFit = 'cover';
+                            img.style.borderRadius = '8px';
+
+                            const delBtn = document.createElement('button');
+                            delBtn.innerHTML = '<i class="ph-bold ph-x"></i>';
+                            delBtn.style.position = 'absolute';
+                            delBtn.style.top = '-5px';
+                            delBtn.style.right = '-5px';
+                            delBtn.style.background = 'red';
+                            delBtn.style.color = 'white';
+                            delBtn.style.border = 'none';
+                            delBtn.style.borderRadius = '50%';
+                            delBtn.style.width = '24px';
+                            delBtn.style.height = '24px';
+                            delBtn.style.cursor = 'pointer';
+                            delBtn.style.display = 'flex';
+                            delBtn.style.alignItems = 'center';
+                            delBtn.style.justifyContent = 'center';
+
+                            delBtn.onclick = (e) => {
+                                e.preventDefault();
+                                deletedImages.push(cleanSrc);
+                                div.remove();
+                            };
+
+                            div.appendChild(img);
+                            div.appendChild(delBtn);
+                            existingContainer.appendChild(div);
+                        });
+                    } else {
+                        existingContainer.innerHTML = '<p style="font-size:12px; color:#aaa;">Tidak ada foto saat ini.</p>';
+                    }
+                }
+            } else {
+                // Switch to View
+                viewCard.style.display = 'block';
+                editCard.style.display = 'none';
+                btn.style.display = 'flex';
+            }
+        }
+
+        // File Upload Interaction
+        const editDropZone = document.getElementById('edit-drop-zone');
+        const editFileInput = document.getElementById('edit-foto');
+        const editPreview = document.getElementById('edit-preview-container');
+
+        if (editDropZone) {
+            editDropZone.addEventListener('click', () => editFileInput.click());
+
+            editFileInput.addEventListener('change', function () {
+                if (this.files && this.files.length > 0) {
+                    editPreview.innerHTML = '';
+                    editPreview.style.display = 'grid';
+
+                    Array.from(this.files).forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const div = document.createElement('div');
+                            div.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px;">`;
+                            editPreview.appendChild(div);
+                        }
+                        reader.readAsDataURL(file);
+                    });
+
+                    editDropZone.style.borderColor = '#4DB6AC';
+                    editDropZone.querySelector('.upload-text').textContent = `${this.files.length} Foto Dipilih`;
+                }
+            });
+        }
+
+        async function fetchLocationsForEdit() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/locations', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                const result = await response.json();
+                if (result.success) {
+                    const select = document.getElementById('edit-lokasi');
+                    // Preserve selected value if already set
+                    const currentValue = select.value;
+
+                    select.innerHTML = '<option value="">Pilih Lokasi</option>';
+                    result.locations.forEach(loc => {
+                        const opt = document.createElement('option');
+                        opt.value = loc.id;
+                        opt.textContent = loc.nama_lokasi;
+                        select.appendChild(opt);
+                    });
+
+                    // Set value if we have currentAssetData
+                    if (currentAssetData && currentAssetData.location_id) {
+                        select.value = currentAssetData.location_id;
+                    }
+                }
+            } catch (e) {
+                console.error("Error fetching locations", e);
+            }
+        }
+
+        document.getElementById('edit-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = new URLSearchParams(window.location.search).get('id');
+            const token = localStorage.getItem('token');
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.textContent = 'Menyimpan...';
+            btn.disabled = true;
+
+            const cleanNum = (id) => {
+                const val = document.getElementById(id).value;
+                return val ? val.replace(/,/g, '') : '0';
+            };
+
+            const formData = new FormData();
+
+            // Manual Appends
+            formData.append('nama', document.getElementById('edit-nama').value);
+            formData.append('description', document.getElementById('edit-description').value);
+            formData.append('sub_asset', document.getElementById('edit-sub-asset').value);
+            formData.append('type_barang', document.getElementById('edit-type-barang').value);
+            formData.append('merk', document.getElementById('edit-merk').value);
+            formData.append('quantity', document.getElementById('edit-quantity').value.replace(',', '.'));
+
+            formData.append('tipe_aset', document.getElementById('edit-tipe').value);
+            formData.append('kondisi', document.getElementById('edit-kondisi').value);
+
+            formData.append('tanggal_beli', document.getElementById('edit-tanggal').value);
+            // formData.append('purch_doc', document.getElementById('edit-purch-doc').value); // Removed
+            formData.append('vendor_name', document.getElementById('edit-vendor-name').value);
+            formData.append('acquis_val', cleanNum('edit-acquis-val'));
+            formData.append('currency', document.getElementById('edit-currency').value);
+            formData.append('bun', document.getElementById('edit-bun').value);
+
+            // Accum. dep. and Book val. removed
+            formData.append('monthly_dep', cleanNum('edit-monthly-dep'));
+            formData.append('dep_key', document.getElementById('edit-dep-key').value);
+            formData.append('odep_start', document.getElementById('edit-odep-start').value);
+            formData.append('use_life', document.getElementById('edit-use-life').value);
+            // formData.append('last_ret', document.getElementById('edit-last-ret').value); // Removed
+
+            formData.append('location_id', document.getElementById('edit-lokasi').value); // Send ID
+            formData.append('pemakai', document.getElementById('edit-pemakai').value);
+            formData.append('cost_center', document.getElementById('edit-cost-center').value);
+
+            formData.append('ev_1', document.getElementById('edit-ev-1').value);
+            formData.append('ev_2', document.getElementById('edit-ev-2').value);
+            formData.append('ev_3', document.getElementById('edit-ev-3').value);
+            formData.append('ev_4', document.getElementById('edit-ev-4').value);
+            formData.append('ev_grp_5', document.getElementById('edit-ev-grp-5').value);
+
+            formData.append('keterangan', document.getElementById('edit-keterangan').value);
+
+            // Images (Multiple)
+            const fileInput = document.getElementById('edit-foto');
+            if (fileInput && fileInput.files.length > 0) {
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    formData.append('images', fileInput.files[i]);
+                }
+            }
+
+            // Deleted Images
+            if (deletedImages.length > 0) {
+                formData.append('deleted_images', JSON.stringify(deletedImages));
+            }
+
+            try {
+                const response = await fetch(`/api/assets/edit/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                        // Content-Type is handled automatically for FormData
+                    },
+                    body: formData
+                });
+
+                if (response.status === 401) {
+                    alert('Sesi habis. Silakan login kembali.');
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                if (response.status === 401) {
+                    alert('Sesi habis. Silakan login kembali.');
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('Aset diperbarui!', 'success');
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    showToast('Gagal update: ' + (result.message || 'Error unknown'), 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error koneksi', 'error');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

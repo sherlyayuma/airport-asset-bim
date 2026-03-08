@@ -1,0 +1,1 @@
+ALTER TABLE assets MODIFY COLUMN quantity DECIMAL(15, 2);

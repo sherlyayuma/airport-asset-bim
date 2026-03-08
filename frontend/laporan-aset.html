@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minangkabau Airport - Laporan Aset</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-mobile.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- SheetJS with Style Support -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body class="dashboard-body">
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="logo-circle">
+                <img src="assets/logo-injourney.png" alt="Injourney Logo">
+            </div>
+            <div class="brand-text">
+                <h3 style="color: #111827; font-size: 0.9rem; font-weight: 700;">Minangkabau <br> Airport</h3>
+            </div>
+        </div>
+
+        <ul class="nav-links">
+            <li>
+                <a href="dashboard.html">
+                    <i class="ph ph-squares-four"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="data-aset.html">
+                    <i class="ph ph-cube"></i>
+                    <span>Data Aset</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="laporan-aset.html">
+                    <i class="ph ph-file-text"></i>
+                    <span>Laporan Aset</span>
+                </a>
+            </li>
+            <li>
+                <a href="laporan.html">
+                    <i class="ph ph-scan"></i>
+                    <span>Scan Aset</span>
+                </a>
+            </li>
+            <li>
+                <a href="cetak-qr.html">
+                    <i class="ph ph-qr-code"></i>
+                    <span>Cetak QR</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button id="logout-btn" class="logout-link">
+                <i class="ph ph-sign-out"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="top-header">
+            <button id="menu-toggle" class="menu-toggle-btn">
+                <i class="ph ph-list"></i>
+            </button>
+            <div class="header-logos">
+                <div class="logo-circle">
+                    <img src="assets/logo-minangkabau.jpg" alt="Logo MIA">
+                </div>
+            </div>
+            <div class="brand-text-container">
+                <h2>Laporan Aset</h2>
+                <p class="subtitle">Unduh rekapitulasi data aset bandara dalam format PDF atau Excel.</p>
+            </div>
+            <div class="header-right">
+
+            </div>
+        </header>
+
+        <!-- Filter & Download Section -->
+        <!-- Filter & Download Section -->
+        <div class="filter-bar card">
+            <div class="filter-group">
+                <select id="filter-tipe" class="form-select">
+                    <option value="all">Semua Tipe</option>
+                    <option value="Asset Tetap">Asset Tetap</option>
+                    <option value="Aset Dibiayakan">Aset Dibiayakan</option>
+                    <option value="AUC">AUC</option>
+                    <option value="Intangible Asset">Intangible Asset</option>
+                </select>
+
+                <select id="filter-sort" class="form-select">
+
+                    <option value="date_desc">Data Terbaru</option>
+                    <option value="date_asc">Data Terlama</option>
+                </select>
+            </div>
+            <div class="action-group">
+                <button onclick="downloadExcel()" class="btn-primary btn-excel">
+                    <i class="ph-bold ph-file-csv"></i>
+                    <span>Unduh Excel</span>
+                </button>
+                <button onclick="downloadPDF()" class="btn-primary btn-pdf">
+                    <i class="ph-bold ph-file-pdf"></i>
+                    <span>Unduh PDF</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Report Table -->
+        <div class="card no-padding table-section" id="report-content">
+            <div style="padding: 24px; border-bottom: 1px solid #eee; display: none;" id="pdf-header">
+                <div style="display: flex; align-items: center; justify-content: center; position: relative;">
+                    <img src="assets/logo-report.png" alt="Logo"
+                        style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); height: 80px; width: auto;">
+                    <div class="header-text-container"
+                        style="text-align: center; width: 100%; padding-left: 100px; padding-right: 100px;">
+                        <!-- Content will be injected by JS -->
+                    </div>
+                </div>
+            </div>
+            <table class="asset-table" id="asset-table" style="font-size: 10px;">
+                <thead>
+                    <tr>
+                        <th width="30">NO</th>
+                        <th>Aset</th>
+                        <th>cap date</th>
+                        <th>aset description</th>
+                        <th>acquisition value</th>
+                        <th>Quantity</th>
+                        <th>BUn</th>
+                        <th>kondisi</th>
+                        <th>lokasi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Sample Data for Report -->
+                    <tr>
+                        <td colspan="9" style="text-align:center;">Loading data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        let allAssetsGlobal = []; // Store data for export
+
+        // Filter Logic
+        const filters = ['tipe', 'sort'];
+        filters.forEach(id => {
+            document.getElementById(`filter-${id}`).addEventListener('change', () => {
+                if (id === 'sort') {
+                    fetchAssets(); // Re-fetch from backend for sorting
+                } else {
+                    filterTable(); // Client-side filter for type
+                }
+            });
+        });
+
+        function filterTable() {
+            const tip = document.getElementById('filter-tipe').value.toLowerCase();
+
+            const rows = document.querySelectorAll('#asset-table tbody tr');
+
+            rows.forEach(row => {
+                const rTip = row.getAttribute('data-type').toLowerCase();
+
+                const matchTip = tip === 'all' || rTip === tip;
+
+                if (matchTip) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Download Excel
+        function downloadExcel() {
+            if (!allAssetsGlobal || allAssetsGlobal.length === 0) {
+                alert("Tidak ada data untuk diekspor");
+                return;
+            }
+
+            // 1. Prepare Styles
+            const styleTitle = {
+                font: { bold: true, sz: 14 },
+                alignment: { horizontal: "center", vertical: "center" }
+            };
+            const styleSubtitle = {
+                font: { bold: true, sz: 12 },
+                alignment: { horizontal: "center", vertical: "center" }
+            };
+            const styleHeaderCol = {
+                font: { bold: true, color: { rgb: "000000" } },
+                alignment: { horizontal: "center", vertical: "center", wrapText: true },
+                fill: { fgColor: { rgb: "00E0E0" } }, // Cyan/Teal background
+                border: {
+                    top: { style: "thin" }, bottom: { style: "thin" },
+                    left: { style: "thin" }, right: { style: "thin" }
+                }
+            };
+            const styleData = {
+                border: {
+                    top: { style: "thin" }, bottom: { style: "thin" },
+                    left: { style: "thin" }, right: { style: "thin" }
+                },
+                alignment: { vertical: "center" }
+            };
+            const styleDataCenter = {
+                border: {
+                    top: { style: "thin" }, bottom: { style: "thin" },
+                    left: { style: "thin" }, right: { style: "thin" }
+                },
+                alignment: { horizontal: "center", vertical: "center" }
+            };
+
+            // 2. Prepare Data & Header logic
+            const tipeFilter = document.getElementById('filter-tipe');
+            const currentYear = new Date().getFullYear();
+
+            // Format Current Date: "4 FEBRUARI 2026"
+            const now = new Date();
+            const months = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
+            const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+            // Dynamic Period Text
+            let periodText = `PER ${dateStr}`;
+
+            // Dynamic Title Logic
+            const tipText = tipeFilter.options[tipeFilter.selectedIndex].text.toUpperCase();
+            const titlePrefix = tipText === "SEMUA TIPE" ? "LAPORAN SELURUH ASET" : `LAPORAN ${tipText}`;
+
+            const headerRow1 = [`${titlePrefix} ${periodText}`];
+            const headerRow2 = ["PT ANGKASA PURA INDONESIA KC BANDARA INTERNASIONAL MINANGKABAU"];
+
+            const ws_data = [];
+
+            // Row 1 & 2: Titles
+            ws_data.push(headerRow1);
+            ws_data.push(headerRow2);
+            ws_data.push([]); // Gap
+
+            // Row 4: Column Headers (24 Columns)
+            const colHeaders = [
+                "Asset", "Cap. date", "Asset description", "Acquis. val.", "Monthly Depreciation", "Crcy",
+                "Cost Ctr", "Quantity", "BUn", "Use", "DepKy", "Ev. grp 5", "Odep. Start",
+                "Ev.1", "Ev.2", "Ev.3", "Ev.4", "Type Barang", "Vendor Name", "Location",
+                "Sub Asset", "Pemakai", "Merk", "Kondisi"
+            ];
+            ws_data.push(colHeaders); // This will be at index 3 (Row 4)
+
+            // 3. Filter Data
+            const tip = tipeFilter.value;
+
+            const filteredData = allAssetsGlobal.filter(asset => {
+                const matchTip = tip === 'all' || (asset.tipe_aset && asset.tipe_aset === tip);
+                return matchTip;
+            });
+
+            // 4. Map Data to Rows
+            filteredData.forEach(item => {
+                const safeDate = (d) => d ? new Date(d).toLocaleDateString('en-GB') : '-';
+                const safeNum = (n) => n ? Number(n) : 0; // Ensure number type
+
+                // Helper to check and return fallback
+                const val = (v) => (v !== undefined && v !== null) ? v : '-';
+
+                const row = [
+                    val(item.nama),                // Asset
+                    safeDate(item.cap_date || item.tanggal_beli), // Cap. date
+                    val(item.description),         // Asset description
+                    safeNum(item.acquis_val),      // Acquis. val.
+                    safeNum(item.monthly_dep),     // Monthly Depreciation
+                    val(item.currency || 'IDR'),   // Crcy
+                    val(item.cost_center),         // Cost Ctr
+                    safeNum(item.quantity),        // Quantity
+                    val(item.bun),                 // BUn
+                    val(item.use_life),            // Use
+                    val(item.dep_key),             // DepKy
+                    val(item.ev_grp_5),            // Ev. grp 5
+                    safeDate(item.odep_start),     // Odep. Start
+                    val(item.ev_1),                // Ev.1
+                    val(item.ev_2),                // Ev.2
+                    val(item.ev_3),                // Ev.3
+                    val(item.ev_4),                // Ev.4
+                    val(item.type_barang),         // Type Barang
+                    val(item.vendor_name),         // Vendor Name
+                    val(item.lokasi),              // Location
+                    val(item.sub_asset),           // Sub Asset
+                    val(item.pemakai),             // Pemakai
+                    val(item.merk),                // Merk
+                    val(item.kondisi)              // Kondisi
+                ];
+                ws_data.push(row);
+            });
+
+            // 5. Create Sheet
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+            // 6. Apply Styles & Merges
+
+            // Merges for Title (Span across all 24 columns? Or just first few visible ones? Let's span 12 for safety)
+            // Or span 24.
+            const totalCols = colHeaders.length; // 24
+            if (!ws['!merges']) ws['!merges'] = [];
+            ws['!merges'].push({ s: { r: 0, c: 0 }, e: { r: 0, c: totalCols - 1 } }); // A1:X1
+            ws['!merges'].push({ s: { r: 1, c: 0 }, e: { r: 1, c: totalCols - 1 } }); // A2:X2
+
+            // Loop through all cells to apply styles
+            const range = XLSX.utils.decode_range(ws['!ref']);
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                for (let C = range.s.c; C <= range.e.c; ++C) {
+                    const cell_address = XLSX.utils.encode_cell({ r: R, c: C });
+                    if (!ws[cell_address]) continue;
+
+                    // Title Rows (0 and 1)
+                    if (R === 0) ws[cell_address].s = styleTitle;
+                    else if (R === 1) ws[cell_address].s = styleSubtitle;
+
+                    // Header Row (3)
+                    else if (R === 3) {
+                        ws[cell_address].s = styleHeaderCol;
+                    }
+
+                    // Data Rows (4+)
+                    else if (R >= 4) {
+                        // Date Cols: 1 (Cap. date), 12 (Odep. Start)
+                        // Center Cols: 7 (Qty), 23 (Kondisi)?
+                        // Let's standard center Date and Qty
+                        if ([1, 7, 12, 23].includes(C)) {
+                            ws[cell_address].s = styleDataCenter;
+                        } else {
+                            ws[cell_address].s = styleData;
+                        }
+
+                        // Numeric Formatting for Value columns (3, 4)
+                        if ([3, 4].includes(C)) {
+                            // Custom format if supported by library, else stick to styleData
+                            // ws[cell_address].z = '#,##0'; // Excel format string
+                        }
+                    }
+                }
+            }
+
+            // Adjust Column Widths
+            const wscols = Array(totalCols).fill({ wch: 15 });
+            wscols[0] = { wch: 20 }; // Asset
+            wscols[2] = { wch: 30 }; // Description
+            wscols[18] = { wch: 25 }; // Vendor
+            wscols[19] = { wch: 20 }; // Location
+            ws['!cols'] = wscols;
+
+            // 7. Export
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Laporan Aset");
+
+            let titleTipe = tipeFilter.value !== 'all' ? tipeFilter.value : 'Semua';
+            // Sanitize filename
+            titleTipe = titleTipe.replace(/[^a-z0-9]/gi, '_');
+
+            XLSX.writeFile(wb, `Laporan_Aset_${titleTipe}_${currentYear}.xlsx`);
+        }
+
+        // Download PDF
+        function downloadPDF() {
+            const element = document.getElementById('report-content');
+            const header = document.getElementById('pdf-header');
+            const tipeFilter = document.getElementById('filter-tipe');
+
+            // Show header for capture
+            header.style.display = 'block';
+
+            const now = new Date();
+            const months = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
+            const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+            // Dynamic Title Logic
+            const tipText = tipeFilter.options[tipeFilter.selectedIndex].text.toUpperCase();
+            const titlePrefix = tipText === "SEMUA TIPE" ? "LAPORAN SELURUH ASET" : `LAPORAN ${tipText}`;
+
+            const line1 = `${titlePrefix} PER ${dateStr}`;
+            const line2 = "PT ANGKASA PURA INDONESIA KC BANDARA INTERNASIONAL MINANGKABAU";
+
+            // Update Header Content
+            // Preserving the logo which is already there
+            const headerContent = header.querySelector('.header-text-container');
+            if (headerContent) {
+                headerContent.innerHTML = `
+                    <h2 style="display: inline-block; text-align: center; margin: 0; font-size: 18px; font-weight: bold; text-transform: uppercase; color: #00A79E; -webkit-text-fill-color: #00A79E; background: none;">${line1}</h2>
+                    <br>
+                    <h3 style="display: inline-block; text-align: center; margin: 4px 0 0 0; font-size: 16px; font-weight: bold; color: #00A79E; -webkit-text-fill-color: #00A79E; background: none;">${line2}</h3>
+                    <div style="border-bottom: 2px solid #00A79E; margin-top: 15px; width: 100%;"></div>
+                 `;
+            }
+
+            // TEMPORARY FIX: Remove scroll class to ensure full capture
+            const originalOverflow = element.style.overflow;
+            element.classList.remove('table-section');
+            element.style.width = 'fit-content'; // Ensure expanding to content
+
+            let titleTipe = tipeFilter.value !== 'all' ? tipeFilter.value : 'Semua';
+            titleTipe = titleTipe.replace(/[^a-z0-9]/gi, '_');
+
+            const opt = {
+                margin: 5,
+                filename: `Laporan_Aset_${titleTipe}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, scrollX: 0, scrollY: 0 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Restore
+                header.style.display = 'none';
+                element.classList.add('table-section');
+                element.style.width = ''; // Reset
+                element.style.overflow = originalOverflow;
+            });
+        }
+
+        // Check Auth and Load Data
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchAssets();
+
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+            });
+        });
+
+        async function fetchAssets() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const sort = document.getElementById('filter-sort').value;
+
+            // Helper to format currency
+            const formatCurrency = (val) => {
+                if (!val) return '-';
+                return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(val);
+            };
+
+            // Fetch Data
+            try {
+                // Fetch all assets with sorting and large limit
+                const response = await fetch(`/api/assets?limit=10000&sort=${sort}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                    return;
+                }
+                const result = await response.json();
+
+                if (result.success) {
+                    const tbody = document.querySelector('#asset-table tbody');
+                    tbody.innerHTML = '';
+
+                    // Use result.assets instead of result.data
+                    const dataToRender = result.assets || [];
+
+                    // Update Global for Export
+                    allAssetsGlobal = dataToRender;
+
+                    dataToRender.forEach((asset, index) => {
+                        const tr = document.createElement('tr');
+
+                        const tipe = asset.tipe_aset || 'Asset Tetap';
+                        const kondisi = asset.kondisi || 'Baik';
+                        const lokasi = asset.lokasi || '';
+                        const dateObj = asset.tanggal_beli ? new Date(asset.tanggal_beli) : null;
+                        const dateStr = dateObj ? dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+                        // en-GB for "12 Jan 2023" format which matches filter logic expectation. 
+                        // If id-ID used "12 Jan 2023" might be different? "Januari" vs "Jan".
+                        // Filter logic splits by space and takes index 1.
+                        // "12 Jan 2023" -> [12, Jan, 2023]. index 1 is Jan.
+                        // id-ID short month might be "Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des".
+                        // Backend filter select values are Jan, Feb, Mar... English style.
+                        // So I should stick to English locale for the displayed date OR update the select values.
+                        // Given the filter logic uses `toLowerCase()`, and select values are English keys ("Jan", "Feb"),
+                        // I will use 'en-GB' to get "12 Jan 2023" consistency.
+
+                        tr.setAttribute('data-type', tipe);
+                        tr.setAttribute('data-location', lokasi);
+                        tr.setAttribute('data-condition', kondisi);
+
+                        tr.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td class="fw-bold">${asset.nama || '-'}</td>
+                            <td>${dateStr}</td>
+                            <td>${asset.description || asset.nama || '-'}</td>
+                            <td>${formatCurrency(asset.acquis_val)}</td>
+                            <td>${asset.quantity || '-'}</td>
+                            <td>${asset.bun || '-'}</td>
+                            <td>${kondisi}</td>
+                            <td>${lokasi}</td>
+                         `;
+                        tbody.appendChild(tr);
+                    });
+
+                    // Re-apply client side filters (like type) after re-fetching
+                    filterTable();
+                }
+            } catch (error) {
+                console.error("Error fetching assets for report:", error);
+            }
+        }
+    </script>
+</body>
+
+</html>
