@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View QR Code - Sistem Aset Bandara</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style-mobile.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+
+<body class="detail-page-body">
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="logo-circle">
+                <img src="/assets/logo-injourney.png" alt="Injourney Logo">
+            </div>
+            <div class="brand-text">
+                <h3 style="color: #111827; font-size: 0.9rem; font-weight: 700;">Minangkabau <br> Airport</h3>
+            </div>
+        </div>
+
+        <ul class="nav-links">
+            <li>
+                <a href="dashboard.html">
+                    <i class="ph ph-squares-four"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="data-aset.html">
+                    <i class="ph ph-cube"></i>
+                    <span>Data Aset</span>
+                </a>
+            </li>
+            <li>
+                <a href="laporan-aset.html">
+                    <i class="ph ph-file-text"></i>
+                    <span>Laporan Aset</span>
+                </a>
+            </li>
+            <li>
+                <a href="laporan.html">
+                    <i class="ph ph-scan"></i>
+                    <span>Scan Aset</span>
+                </a>
+            </li>
+            <li>
+                <a href="cetak-qr.html">
+                    <i class="ph ph-qr-code"></i>
+                    <span>Cetak QR</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button id="logout-btn" class="logout-link">
+                <i class="ph ph-sign-out"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Wrapper -->
+    <div class="layout-with-sidebar">
+        <!-- Top Navigation -->
+        <header class="detail-nav">
+            <!-- Logo Section -->
+            <div class="header-logos" style="margin-right: 15px;">
+                <div class="logo-circle">
+                    <img src="/assets/logo-minangkabau.jpg" alt="Logo MIA">
+                </div>
+            </div>
+            <div class="nav-brand">
+                <span>Sistem Aset Bandara</span>
+            </div>
+            <div class="nav-right">
+                <!-- Admin elements removed -->
+            </div>
+        </header>
+
+        <main class="detail-container">
+            <!-- Back Button Area -->
+            <div class="back-link-container"
+                style="max-width: 500px; margin: 0 auto; display: flex; justify-content: flex-start;">
+                <a href="#" id="back-link" class="back-link"
+                    style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: #666; font-weight: 500; font-size: 14px;">
+                    <i class="ph ph-arrow-left" style="font-size: 18px;"></i>
+                    Kembali ke Detail Aset
+                </a>
+            </div>
+
+            <div id="qr-download-card" class="detail-card"
+                style="text-align: center; padding: 40px; max-width: 500px; margin: 40px auto; background: white; border-radius: 12px;">
+                <h2 id="asset-title" style="margin-bottom: 8px;">QR Code Aset</h2>
+                <p id="asset-subtitle" style="color: var(--text-secondary); margin-bottom: 32px;">-</p>
+
+                <div id="qr-container" style="display: flex; justify-content: center; margin-bottom: 32px;">
+                    <!-- QR Image injected here -->
+                    <div
+                        style="width: 300px; height: 300px; background: #f0f0f0; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i class="ph ph-spinner ph-spin" style="font-size: 32px; color: #ccc;"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div style="max-width: 500px; margin: 0 auto; text-align: center;">
+                <a href="#" id="download-btn" class="btn-primary"
+                    style="display: inline-flex; text-decoration: none; padding: 12px 32px;">
+                    <i class="ph-fill ph-download-simple"></i>
+                    <span>Download QR Code</span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            // Setup Back Link
+            const backLink = document.getElementById('back-link');
+            if (id) {
+                backLink.href = `detail-aset.html?id=${id}`;
+            } else {
+                backLink.href = 'data-aset.html';
+            }
+
+            // Logout Logic
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+            });
+
+            if (!id) {
+                document.getElementById('asset-subtitle').textContent = 'ID Aset tidak ditemukan';
+                return;
+            }
+
+            try {
+                // Fetch Asset to get asset_id (code)
+                const response = await fetch(`/api/assets/view/${id}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    const asset = result.asset;
+                    document.getElementById('asset-title').textContent = asset.description || '-';
+                    document.getElementById('asset-subtitle').textContent = `Asset: ${asset.nama || '-'}`;
+
+                    // Set QR Image
+                    const qrContainer = document.getElementById('qr-container');
+                    const qrUrl = `/api/assets/barcode/${asset.asset_id}`; // Use API directly
+                    qrContainer.innerHTML = `<img src="${qrUrl}" alt="QR Code" style="width: 300px; height: 300px; border: 1px solid #eee; padding: 10px; border-radius: 12px;">`;
+
+                    // Set Download Hook
+                    const downloadBtn = document.getElementById('download-btn');
+                    downloadBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const card = document.getElementById('qr-download-card');
+
+                        html2canvas(card, {
+                            scale: 2,
+                            backgroundColor: '#ffffff',
+                            useCORS: true
+                        }).then(canvas => {
+                            const link = document.createElement('a');
+                            link.download = `QR_${asset.asset_id}.png`;
+                            link.href = canvas.toDataURL('image/png');
+                            link.click();
+                        });
+                    });
+
+                } else {
+                    document.getElementById('asset-subtitle').textContent = 'Gagal memuat data aset';
+                }
+            } catch (error) {
+                console.error(error);
+                document.getElementById('asset-subtitle').textContent = 'Terjadi kesalahan koneksi';
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -22,8 +22,8 @@ const generateBarcode = async (assetId) => {
   const filename = `${assetId}.png`;
   const filePath = path.join(fullDir, filename);
 
-  // URL to encode - Using env var (Vercel) or fallback to your live domain
-  const baseUrl = process.env.BASE_URL || 'https://airport-asset-bim-7zpb.vercel.app';
+  // URL to encode - Official Monolith URL
+  const baseUrl = process.env.BASE_URL || 'https://airport-asset-bim.vercel.app';
   const url = `${baseUrl}/detail-aset.html?id=${assetId}`;
 
   try {

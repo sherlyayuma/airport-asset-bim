@@ -24,7 +24,7 @@ const login = async (req, res, next) => {
       throw error;
     }
 
-    const match = await bcrypt.compare(password, admin.password_hash);
+    const match = await bcrypt.compare(password, admin.password);
 
     if (!match) {
       const error = new Error('Invalid username or password');

@@ -24,33 +24,37 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Static Files (for assets like images and barcodes)
-const uploadsDir = path.join(__dirname, '../uploads');
-const barcodesDir = path.join(__dirname, '../barcodes');
+// View Engine Setup (EJS)
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '../views'));
 
-app.use('/uploads', express.static(uploadsDir));
-app.use('/barcodes', express.static(barcodesDir));
+// Static Files
+app.use(express.static(path.join(__dirname, '../public')));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/barcodes', express.static(path.join(__dirname, '../barcodes')));
 
-// Fallback for flat structure (if nested path fails)
-const staticFallback = (baseDir) => (req, res, next) => {
-    // If we're here, express.static didn't find the file
-    const filename = path.basename(req.path);
-    const flatPath = path.join(baseDir, filename);
-    
-    if (fs.existsSync(flatPath) && fs.lstatSync(flatPath).isFile()) {
-        return res.sendFile(flatPath);
-    }
-    next();
-};
-
-app.use('/uploads', staticFallback(uploadsDir));
-app.use('/barcodes', staticFallback(barcodesDir));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/assets', assetRoutes);
 app.use('/api/locations', locationRoutes);
 app.use('/api/scan', scanRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+
+// View Routes
+app.get('/', (req, res) => res.render('index'));
+app.get('/index', (req, res) => res.render('index'));
+app.get('/dashboard', (req, res) => res.render('dashboard'));
+app.get('/data-aset', (req, res) => res.render('data-aset'));
+app.get('/tambah-aset', (req, res) => res.render('tambah-aset'));
+app.get('/detail-aset', (req, res) => res.render('detail-aset'));
+app.get('/laporan-aset', (req, res) => res.render('laporan-aset'));
+app.get('/cetak-qr', (req, res) => res.render('cetak-qr'));
+app.get('/view-qr', (req, res) => res.render('view-qr'));
+
+// Support for .html extensions just in case
+app.get('/:page.html', (req, res) => {
+    res.render(req.params.page);
+});
 
 // Handle 404 for API routes
 app.use('/api/*', (req, res, next) => {

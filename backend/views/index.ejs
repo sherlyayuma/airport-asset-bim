@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Aset Bandara - Masuk</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons (for modern icons) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body>
+    <div class="background-slider">
+        <div class="slide active" style="background-image: url('assets/login-bg-minangkabau.jpg');"></div>
+        <div class="slide" style="background-image: url('assets/login-bg-6.png'); background-position: center top;">
+        </div>
+    </div>
+
+
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Icon / Logo Placeholder -->
+            <div class="logo-area">
+                <img src="/assets/logo-inj.png" alt="Injourney Airport" style="max-width: 250px; height: auto;">
+            </div>
+
+
+            <!-- Title Group -->
+            <div class="title-group">
+                <h1 style="margin-bottom: 10px; color: #333;">Asset Manajemen</h1>
+                <h2>Masuk Administrator</h2>
+
+            </div>
+
+            <!-- Error Alert -->
+            <div id="error-alert" class="alert error hidden">
+                <i class="ph-bold ph-warning-circle"></i>
+                <span id="error-message">Username atau password salah</span>
+            </div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Nama Pengguna</label>
+                    <div class="input-wrapper">
+                        <i class="ph ph-user input-icon"></i>
+                        <input type="text" id="username" name="username" placeholder=" " required
+                            autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Kata Sandi</label>
+                    <div class="input-wrapper">
+                        <i class="ph ph-lock-key input-icon"></i>
+                        <input type="password" id="password" name="password" placeholder="" required
+                            autocomplete="current-password">
+                        <button type="button" id="toggle-password" class="icon-btn" aria-label="Lihat kata sandi">
+                            <i class="ph ph-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" style="margin-top: 30px;">
+                    <span>Masuk</span>
+                    <i class="ph-bold ph-arrow-right"></i>
+                </button>
+
+            </form>
+
+
+            <footer class="footer">
+                &copy; 2026 Sistem Manajemen Aset Bandara. v1.0.0
+            </footer>
+        </div>
+
+        <script src="/js/script.js"></script>
+</body>
+
+</html>

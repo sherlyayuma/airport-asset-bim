@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minangkabau Airport - Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style-mobile.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body class="dashboard-body">
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="logo-circle">
+                <img src="/assets/logo-injourney.png" alt="Injourney Logo">
+            </div>
+            <div class="brand-text">
+                <h3 style="color: #111827; font-size: 0.9rem; font-weight: 700;">Minangkabau <br> Airport</h3>
+            </div>
+        </div>
+
+        <ul class="nav-links">
+            <li class="active">
+                <a href="#">
+                    <i class="ph ph-squares-four"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="data-aset.html">
+                    <i class="ph ph-cube"></i>
+                    <span>Data Aset</span>
+                </a>
+            </li>
+            <li>
+                <a href="laporan-aset.html">
+                    <i class="ph ph-file-text"></i>
+                    <span>Laporan Aset</span>
+                </a>
+            </li>
+            <li>
+                <a href="laporan.html">
+                    <i class="ph ph-scan"></i>
+                    <span>Scan Aset</span>
+                </a>
+            </li>
+            <li>
+                <a href="cetak-qr.html">
+                    <i class="ph ph-qr-code"></i>
+                    <span>Cetak QR</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button id="logout-btn" class="logout-link">
+                <i class="ph ph-sign-out"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="top-header">
+            <button id="menu-toggle" class="menu-toggle-btn">
+                <i class="ph ph-list"></i>
+            </button>
+            <div class="header-logos">
+                <div class="logo-circle">
+                    <img src="/assets/logo-minangkabau.jpg" alt="Logo MIA">
+                </div>
+            </div>
+            <div class="brand-text-container">
+                <h2>Dashboard Overview</h2>
+                <p class="subtitle">Pantau status dan kinerja aset bandara secara real-time.</p>
+            </div>
+            <div class="header-right">
+                <!-- Search Bar REMOVED -->
+                <!-- Profile REMOVED -->
+            </div>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon bg-blue">
+                    <i class="ph-fill ph-check-square-offset"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Aset</h3>
+                    <p class="stat-value" id="stat-total">-</p>
+                </div>
+                <!-- <span class="trend up">+12.5%</span> -->
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon bg-green">
+                    <i class="ph-fill ph-activity"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Aset Baik</h3>
+                    <p class="stat-value" id="stat-baik">-</p>
+                </div>
+                <!-- <span class="trend up">+5.2%</span> -->
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon bg-red">
+                    <i class="ph-fill ph-warning-octagon"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Aset Rusak</h3>
+                    <p class="stat-value" id="stat-rusak">-</p>
+                </div>
+                <!-- <span class="trend down">-2.1%</span> -->
+            </div>
+        </div>
+
+        <!-- Content Grid (Chart & Table) -->
+        <div class="content-grid" style="grid-template-columns: 1fr;">
+            <!-- Chart Section Removed -->
+
+            <!-- Table Section -->
+            <div class="table-section card no-padding">
+                <div style="padding: 20px; border-bottom: 1px solid #E5E7EB;">
+                    <h3 style="font-size: 1.1rem; color: #111827;">Aktivitas Terbaru</h3>
+                </div>
+                <table class="asset-table">
+                    <thead>
+                        <tr>
+                            <th>ASSET</th>
+                            <th>ASSET DESCRIPTION</th>
+                            <th>TIPE ASET</th>
+                            <th>LOKASI</th>
+                            <th>KONDISI</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activity-table-body">
+                        <tr>
+                            <td colspan="5" style="text-align:center; padding: 32px;">
+                                <i class="ph ph-spinner ph-spin" style="font-size: 24px;"></i> Memuat data...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="/js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/dashboard/data', {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    cache: 'no-store'
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update Stats
+                    const setStat = (id, val) => {
+                        const el = document.getElementById(id);
+                        if (el) el.textContent = val;
+                    };
+                    setStat('stat-total', data.stats.total);
+                    setStat('stat-baik', data.stats.baik);
+                    setStat('stat-rusak', data.stats.rusak);
+
+                    // Update Table
+                    const tbody = document.getElementById('activity-table-body');
+                    if (tbody) {
+                        tbody.innerHTML = '';
+                        if (data.recentActivity && data.recentActivity.length > 0) {
+                            data.recentActivity.forEach(asset => {
+                                const tr = document.createElement('tr');
+
+                                // Badge Logic based on Condition
+                                const lowerCond = (asset.kondisi || '').toLowerCase();
+                                let badgeClass = 'active'; // Default Green
+                                if (lowerCond === 'perbaikan') badgeClass = 'maintenance'; // Orange
+                                else if (lowerCond === 'rusak' || lowerCond === 'hilang') badgeClass = 'damaged'; // Red/custom style
+
+                                tr.innerHTML = `
+                                    <td>
+                                        <div class="asset-name-cell">
+                                            <span class="fw-bold">${asset.nama}</span>
+                                        </div>
+                                    </td>
+                                    <td>${asset.description || '-'}</td>
+                                    <td>${asset.tipe_aset || '-'}</td>
+                                    <td>${asset.lokasi || '-'}</td>
+                                    <td><span class="badge ${badgeClass}">${asset.kondisi}</span></td>
+                                `;
+                                tbody.appendChild(tr);
+                            });
+                        } else {
+                            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada aktivitas.</td></tr>';
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error dashboard:', error);
+            }
+
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                });
+            }
+
+
+        });
+    </script>
+</body>
+
+</html>
