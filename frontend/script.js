@@ -1,90 +1,79 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Script initialized...');
+
+    // LINDUNGI: Elemen Login
     const loginForm = document.getElementById('login-form');
-    const togglePasswordBtn = document.getElementById('toggle-password');
-    const passwordInput = document.getElementById('password');
-    const errorAlert = document.getElementById('error-alert');
-    const errorMessage = document.getElementById('error-message');
-    
-    // Periksa apakah ini halaman login
     if (loginForm) {
+        const togglePasswordBtn = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('password');
+        const errorAlert = document.getElementById('error-alert');
+        const errorMessage = document.getElementById('error-message');
         const submitBtn = loginForm.querySelector('.submit-btn');
         const btnText = submitBtn ? submitBtn.querySelector('span') : null;
 
-    // Toggle Password Visibility
-    togglePasswordBtn.addEventListener('click', () => {
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-
-        // Toggle icon
-        const icon = togglePasswordBtn.querySelector('i');
-        if (type === 'text') {
-            icon.classList.remove('ph-eye');
-            icon.classList.add('ph-eye-slash');
-        } else {
-            icon.classList.remove('ph-eye-slash');
-            icon.classList.add('ph-eye');
-        }
-    });
-
-    // Handle Form Submission
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Jalankan paling awal
-
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value.trim();
-        
-        console.log('Mencoba Login...', { username });
-
-        // Reset UI
-        errorAlert.classList.add('hidden');
-        submitBtn.disabled = true;
-        const originalBtnText = btnText.textContent;
-        btnText.textContent = 'Memuat...';
-
-        try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
+        // Toggle Password Visibility
+        if (togglePasswordBtn && passwordInput) {
+            togglePasswordBtn.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                const icon = togglePasswordBtn.querySelector('i');
+                if (icon) {
+                    icon.className = type === 'text' ? 'ph ph-eye-slash' : 'ph ph-eye';
+                }
             });
-
-            const data = await response.json();
-            console.log('Respon server:', data);
-
-            if (data.success) {
-                // Success - Redirect
-                const token = (data.data && data.data.token) ? data.data.token : data.token;
-                localStorage.setItem('token', token);
-                window.location.href = '/dashboard.html';
-            } else {
-                // Show Error
-                errorMessage.textContent = data.message || 'Username atau password salah.';
-                errorAlert.classList.remove('hidden');
-                
-                // Shake animation
-                const card = document.querySelector('.login-card');
-                card.style.animation = 'none';
-                card.offsetHeight; /* trigger reflow */
-                card.style.animation = 'shake 0.4s';
-            }
-        } catch (error) {
-            console.error('Koneksi Gagal:', error);
-            errorMessage.textContent = 'Gagal menghubungi server. Pastikan Backend sudah jalan.';
-            errorAlert.classList.remove('hidden');
-        } finally {
-            if (submitBtn) submitBtn.disabled = false;
-            if (btnText) btnText.textContent = originalBtnText;
         }
-    });
-}
 
-    /* Background Slideshow */
+        // Handle Form Submission
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const username = document.getElementById('username')?.value.trim();
+            const password = document.getElementById('password')?.value.trim();
+
+            if (!username || !password) return;
+
+            // Reset UI
+            if (errorAlert) errorAlert.classList.add('hidden');
+            if (submitBtn) submitBtn.disabled = true;
+            let originalBtnText = '';
+            if (btnText) {
+                originalBtnText = btnText.textContent;
+                btnText.textContent = 'Memuat...';
+            }
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const token = data.token || (data.data && data.data.token);
+                    localStorage.setItem('token', token);
+                    window.location.href = '/dashboard.html';
+                } else {
+                    if (errorMessage) errorMessage.textContent = data.message || 'Login gagal.';
+                    if (errorAlert) errorAlert.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                if (errorMessage) errorMessage.textContent = 'Gagal menghubungi server.';
+                if (errorAlert) errorAlert.classList.remove('hidden');
+            } finally {
+                if (submitBtn) submitBtn.disabled = false;
+                if (btnText) btnText.textContent = originalBtnText;
+            }
+        });
+    }
+
+    // LINDUNGI: Slideshow
     const slides = document.querySelectorAll('.slide');
-    let currentSlide = 0;
-
     if (slides.length > 0) {
+        let currentSlide = 0;
         setInterval(() => {
             slides[currentSlide].classList.remove('active');
             currentSlide = (currentSlide + 1) % slides.length;
