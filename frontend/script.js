@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // LINDUNGI: Elemen Login
     const loginForm = document.getElementById('login-form');
+    console.log('Login form found:', !!loginForm);
     if (loginForm) {
         const togglePasswordBtn = document.getElementById('toggle-password');
         const passwordInput = document.getElementById('password');
