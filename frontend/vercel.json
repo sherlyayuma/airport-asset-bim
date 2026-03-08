@@ -2,15 +2,15 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://airport-asset-system-backend.onrender.com/api/:path*"
+      "destination": "https://airport-asset-bim.vercel.app/api/:path*"
     },
     {
       "source": "/uploads/:path*",
-      "destination": "https://airport-asset-system-backend.onrender.com/uploads/:path*"
+      "destination": "https://airport-asset-bim.vercel.app/uploads/:path*"
     },
     {
       "source": "/barcodes/:path*",
-      "destination": "https://airport-asset-system-backend.onrender.com/barcodes/:path*"
+      "destination": "https://airport-asset-bim.vercel.app/barcodes/:path*"
     }
   ]
 }
