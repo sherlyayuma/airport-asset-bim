@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    alert('Sistem Aktif - JavaScript Berhasil Dimuat');
     console.log('Script initialized...');
 
     // LINDUNGI: Elemen Login

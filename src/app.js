@@ -24,9 +24,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// View Engine Setup (EJS)
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '../views'));
+app.use(cookieParser());
 
 // Static Files
 app.use(express.static(path.join(__dirname, '../public')));
@@ -40,20 +38,10 @@ app.use('/api/locations', locationRoutes);
 app.use('/api/scan', scanRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// View Routes
-app.get('/', (req, res) => res.render('index'));
-app.get('/index', (req, res) => res.render('index'));
-app.get('/dashboard', (req, res) => res.render('dashboard'));
-app.get('/data-aset', (req, res) => res.render('data-aset'));
-app.get('/tambah-aset', (req, res) => res.render('tambah-aset'));
-app.get('/detail-aset', (req, res) => res.render('detail-aset'));
-app.get('/laporan-aset', (req, res) => res.render('laporan-aset'));
-app.get('/cetak-qr', (req, res) => res.render('cetak-qr'));
-app.get('/view-qr', (req, res) => res.render('view-qr'));
-
-// Support for .html extensions just in case
-app.get('/:page.html', (req, res) => {
-    res.render(req.params.page);
+// Routing for SPA or fallback to index.html
+app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // Handle 404 for API routes
