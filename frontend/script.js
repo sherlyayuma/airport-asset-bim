@@ -25,11 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle Form Submission
     loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Jalankan paling awal
 
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        console.log('Sending login:', { username, password });
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        
+        console.log('Mencoba Login...', { username });
 
         // Reset UI
         errorAlert.classList.add('hidden');
@@ -47,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const data = await response.json();
+            console.log('Respon server:', data);
 
             if (data.success) {
                 // Success - Redirect
@@ -55,8 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = '/dashboard.html';
             } else {
                 // Show Error
-                errorMessage.textContent = data.message || 'Terjadi kesalahan saat masuk.';
+                errorMessage.textContent = data.message || 'Username atau password salah.';
                 errorAlert.classList.remove('hidden');
+                
                 // Shake animation
                 const card = document.querySelector('.login-card');
                 card.style.animation = 'none';
@@ -64,8 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.style.animation = 'shake 0.4s';
             }
         } catch (error) {
-            console.error('Error:', error);
-            errorMessage.textContent = 'Gagal menghubungi server. Periksa koneksi Anda.';
+            console.error('Koneksi Gagal:', error);
+            errorMessage.textContent = 'Gagal menghubungi server. Pastikan Backend sudah jalan.';
             errorAlert.classList.remove('hidden');
         } finally {
             submitBtn.disabled = false;
